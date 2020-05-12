@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
               _myPassword.text == "" ||
               _myUsername.text == null ||
               _myPassword.text == null) {
-            return showDialog(
+            showDialog(
               context: context,
               builder: (BuildContext context) {
                 // return object of type Dialog
@@ -106,11 +106,12 @@ class _LoginPageState extends State<LoginPage> {
                 );
               },
             );
+          } else {
+            _login(_myUsername.text, _myPassword.text, context);
+            setState(() {
+              isLoading = true;
+            });
           }
-          _login(_myUsername.text, _myPassword.text, context);
-          setState(() {
-            isLoading = true;
-          });
         },
         child: Text("Login",
             textAlign: TextAlign.center,
