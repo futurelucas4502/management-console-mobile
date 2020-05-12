@@ -1,9 +1,14 @@
+//Start Imports
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'globals.dart' as globals;
+
+//End Imports
+
+//App Start point
 
 void main() => runApp(MyApp());
 
@@ -29,6 +34,10 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+//End Start point
+
+//Start login page
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -220,6 +229,10 @@ void encryptFunc(password) {
   globals.currentPassword = (encrypter.encrypt(password, iv: iv)).base64;
 }
 
+//End Login page
+
+//Start Logout function
+
 void logout(context) {
   Navigator.pushReplacement(
     context,
@@ -229,6 +242,10 @@ void logout(context) {
   globals.currentPassword = null;
   globals.privileges = null;
 }
+
+//End Logout function
+
+//Drawer code
 
 class MyDrawer extends StatelessWidget {
   @override
@@ -251,12 +268,12 @@ class MyDrawer extends StatelessWidget {
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => MainPage()),
+                        MaterialPageRoute(builder: (context) => PaymentsPage()),
                       );
                     },
                   ),
                 ),
-                Card(
+                if(globals.privileges == "1")Card(
                   child: ListTile(
                     title: Center(
                         child: Text("Acccounting",
@@ -271,7 +288,7 @@ class MyDrawer extends StatelessWidget {
                     },
                   ),
                 ),
-                Card(
+                if(globals.privileges == "1")Card(
                   child: ListTile(
                     title: Center(
                         child: Text("Members",
@@ -391,6 +408,10 @@ class MyDrawer extends StatelessWidget {
   }
 }
 
+//End drawer code
+
+//Main Page Code
+
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);
 
@@ -447,8 +468,74 @@ Future<String> mainReady() async {
   return ((result).length).toString();
 }
 
-retryFuture(future, delay) {
+//End Main page code
+
+//Start Payments page code
+
+class PaymentsPage extends StatefulWidget {
+  PaymentsPage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _PaymentsPageState createState() => _PaymentsPageState();
+}
+
+class _PaymentsPageState extends State<PaymentsPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Payments",
+            style: globals.style
+                .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+      drawer: MyDrawer(),
+      body: Container(
+        alignment: Alignment.topRight,
+        margin: new EdgeInsets.only(top: 20.0, right: 20.0),
+        child: FutureBuilder(
+            future: paymentsReady(),
+            builder: (_, snapshot) {
+              if (snapshot.hasData) {
+                return Text('${snapshot.data}',
+                    style: globals.style.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold));
+              } else {
+                return CircularProgressIndicator();
+              }
+            }),
+      ),
+    );
+  }
+}
+
+Future<String> paymentsReady() async {
+  var result;
+  try {
+    http.Response response = await http.post(
+      'https://lucas-testing.000webhostapp.com',
+      body: <String, String>{
+        "formname": "payments",
+        "username": globals.currentUsername,
+        "password": globals.currentPassword
+      },
+    );
+    result = json.decode(response.body);
+  } catch (e) {
+    retryFuture(paymentsReady, 2000);
+  }
+  return result;
+}
+
+//End Payments page code
+
+//Start Retry load data function
+
+retryFuture(future, delay) { //Any future/function name and a delay and it will work
   Future.delayed(Duration(milliseconds: delay), () {
     future();
   });
 }
+
+//End Retry load data function
