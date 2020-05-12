@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:encrypt/encrypt.dart';
+import 'package:http/http.dart' as http;
+import 'package:encrypt/encrypt.dart' as encrypt;
+import 'globals.dart' as globals;
 
 void main() => runApp(MyApp());
 
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Management Console ',
+      title: 'Management Console',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -129,32 +130,31 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 void _login(usernameField, passwordField) async {
-  debugPrint("Username: " + usernameField);
-  debugPrint("Password: " + passwordField);
-  // set up POST request arguments
-  String url = 'https://lucas-testing.000webhostapp.com/';
-  String json = '{"username": '+usernameField+', "password": '+passwordField+', "datetime": '+DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())+'}';
-  debugPrint("Json Request: " + json);
-  // make POST request
-  Response response = await post(url, body: json);
+  globals.currentUsername = usernameField;
+  encryptFunc(passwordField);
+
+  Map data = {
+      "formname": "login",
+      "username": globals.currentUsername,
+      "password": globals.currentPassword,
+      "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())
+    };
+
+  http.Response response = await http.post(
+    'https://lucas-testing.000webhostapp.com',
+    body: data,
+  );
+
   // check the status code for the result
-  int statusCode = response.statusCode;
   // this API passes back the id of the new item added to the body
-  String body = response.body;
-  debugPrint("Response: " + body);
-  debugPrint("Status: " + statusCode.toString());
+  debugPrint("Response: " + response.body);
+  debugPrint("Status: " + (response.statusCode).toString());
 }
 
-void encrypt() {
-  final plainText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit';
-  final key = Key.fromUtf8('my 32 length key................');
-  final iv = IV.fromLength(16);
-
-  final encrypter = Encrypter(AES(key));
-
-  final encrypted = encrypter.encrypt(plainText, iv: iv);
-  final decrypted = encrypter.decrypt(encrypted, iv: iv);
-
-  print(decrypted); // Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  print(encrypted.base64); // R4PxiU3h8YoIRqVowBXm36ZcCeNeZ4s1OvVBTfFlZRdmohQqOpPQqD1YecJeZMAop/hZ4OxqgC1WtwvX/hP9mw==
+void encryptFunc(password) {
+  final key = encrypt.Key.fromUtf8('eb45707674371ce8259b2153c7b6a453');
+  final iv = encrypt.IV.fromUtf8('70cd8558247bed84');
+  final encrypter =
+      encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
+  globals.currentPassword = (encrypter.encrypt(password, iv: iv)).base64;
 }
