@@ -6,10 +6,6 @@ import '../main.dart' as globals;
 //Main Page Code
 
 class MainPage extends StatefulWidget {
-  MainPage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -18,10 +14,8 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Main",
-            style: globals.style
-                .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+      appBar: globals.MyAppBar(
+        title: "Main",
       ),
       drawer: globals.MyDrawer(),
       body: Container(

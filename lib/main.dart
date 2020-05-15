@@ -1,9 +1,11 @@
 //Start Imports
 library my_prj.globals;
+
 import 'package:flutter/material.dart';
 import 'package:management_console_mobile/routes/login.dart';
 import 'package:management_console_mobile/routes/main.dart';
 import 'package:management_console_mobile/routes/payments.dart';
+
 var currentUsername;
 var currentPassword;
 var privileges;
@@ -25,15 +27,28 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/login',
       routes: {
-        '/login' : (context) => LoginPage(),
-        '/main' : (context) => MainPage(),
-        '/payments' : (context) => PaymentsPage(),
+        '/login': (context) => LoginPage(),
+        '/main': (context) => MainPage(),
+        '/payments': (context) => PaymentsPage(),
       },
     );
   }
 }
 
 //End Start point
+
+//AppBar code
+
+class MyAppBar extends AppBar {
+  MyAppBar({String title})
+      : super(
+            title: Text(title,
+                style: style.copyWith(
+                    color: Colors.white, fontWeight: FontWeight.bold)),
+                    centerTitle: true,);
+}
+
+//End AppBar code
 
 //Drawer code
 

@@ -6,10 +6,6 @@ import '../main.dart' as globals;
 //Start Payments page code
 
 class PaymentsPage extends StatefulWidget {
-  PaymentsPage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _PaymentsPageState createState() => _PaymentsPageState();
 }
@@ -18,10 +14,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Payments",
-            style: globals.style
-                .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+      appBar: globals.MyAppBar(
+        title: "Payments"
       ),
       drawer: globals.MyDrawer(),
       body: Container(
