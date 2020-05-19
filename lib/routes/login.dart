@@ -19,27 +19,38 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final usernameField = TextField(
-      controller: _myUsername,
-      obscureText: false,
-      style: globals.style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Username",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+    final logo = Hero(
+      tag: 'hero',
+      child: CircleAvatar(
+        backgroundColor: Colors.transparent,
+        radius: 77.5,
+        child: Image.asset('assets/logo.png'),
+      ),
     );
-    final passwordField = TextField(
+
+    final username = TextFormField(
+      controller: _myUsername,
+      style: globals.style,
+      autofocus: true,
+      decoration: InputDecoration(
+        hintText: 'Username',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      ),
+    );
+
+    final password = TextFormField(
       controller: _myPassword,
       obscureText: true,
       style: globals.style,
       decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Password",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+        hintText: 'Password',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      ),
     );
-    final loginButon = Material(
+
+    final loginButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
       color: Color(0xff007bff),
@@ -77,48 +88,40 @@ class _LoginPageState extends State<LoginPage> {
             });
           }
         },
-        child: Text("Login",
-            textAlign: TextAlign.center,
+        child: Text('Login',
             style: globals.style
                 .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
 
+    final forgotLabel = FlatButton(
+      child: Text(
+        'Forgot password?',
+        style: TextStyle(color: Colors.black54),
+      ),
+      onPressed: () {},
+    );
+
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: isLoading
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : Container(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(36.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 155.0,
-                        child: Image.asset(
-                          "assets/logo.png",
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      SizedBox(height: 45.0),
-                      usernameField,
-                      SizedBox(height: 25.0),
-                      passwordField,
-                      SizedBox(
-                        height: 35.0,
-                      ),
-                      loginButon,
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                    ],
-                  ),
-                ),
+            : ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.only(left: 24.0, right: 24.0),
+                children: <Widget>[
+                  logo,
+                  SizedBox(height: 48.0),
+                  username,
+                  SizedBox(height: 8.0),
+                  password,
+                  SizedBox(height: 24.0),
+                  loginButton,
+                  forgotLabel
+                ],
               ),
       ),
     );
