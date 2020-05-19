@@ -45,7 +45,6 @@ class _LoginPageState extends State<LoginPage> {
       color: Color(0xff007bff),
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           if (_myUsername.text == "" ||
               _myPassword.text == "" ||
