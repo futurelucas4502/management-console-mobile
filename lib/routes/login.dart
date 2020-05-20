@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
     globals.currentPassword = encryptFunc(passwordField);
 
     http.Response response = await http.post(
-      'https://thecityoftruromariners.futurelucas4502.co.uk',
+      globals.apiUrl,
       body: <String, String>{
         "formname": "login",
         "username": globals.currentUsername,
