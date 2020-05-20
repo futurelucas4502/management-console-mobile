@@ -1,3 +1,8 @@
+// Login.dart
+// Changelog:
+// 20-05: Added focus nodes to return btn's - Harrison
+// 20-05: Added login validation to seperate function to allow for done btn on keyboard to run the function or the login button - Harrison
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:encrypt/encrypt.dart' as encrypt;
@@ -15,6 +20,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _myUsername = TextEditingController();
   final _myPassword = TextEditingController();
+
+  // Add focus nodes
+  final FocusNode _passwordFocus = FocusNode();
+  final FocusNode _usernameFocus = FocusNode();
+
   bool isLoading = false;
 
   @override
@@ -32,22 +42,32 @@ class _LoginPageState extends State<LoginPage> {
       controller: _myUsername,
       style: globals.style,
       autofocus: true,
+      focusNode: _usernameFocus,
+      textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         hintText: 'Username',
         contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
+      onFieldSubmitted: (term) {
+        _fieldFocusChange(context, _usernameFocus, _passwordFocus);
+      },
     );
 
     final password = TextFormField(
       controller: _myPassword,
       obscureText: true,
       style: globals.style,
+      focusNode: _passwordFocus,
+      textInputAction: TextInputAction.go,
       decoration: InputDecoration(
         hintText: 'Password',
         contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
+      onFieldSubmitted: (term) {
+        _loginValidation();
+      },
     );
 
     final loginButton = Material(
@@ -58,35 +78,7 @@ class _LoginPageState extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          if (_myUsername.text == "" ||
-              _myPassword.text == "" ||
-              _myUsername.text == null ||
-              _myPassword.text == null) {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                // return object of type Dialog
-                return AlertDialog(
-                  title: new Text("Login Error"),
-                  content: new Text("Username or password cannot be empty!"),
-                  actions: <Widget>[
-                    // usually buttons at the bottom of the dialog
-                    new FlatButton(
-                      child: new Text("Ok"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          } else {
-            _login(_myUsername.text, _myPassword.text, context);
-            setState(() {
-              isLoading = true;
-            });
-          }
+          _loginValidation();
         },
         child: Text('Login',
             style: globals.style
@@ -125,6 +117,44 @@ class _LoginPageState extends State<LoginPage> {
               ),
       ),
     );
+  }
+
+  _fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    // Change the current focused field
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
+  }
+
+  void _loginValidation() {
+    if (_myUsername.text == "" ||
+        _myPassword.text == "" ||
+        _myUsername.text == null ||
+        _myPassword.text == null) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              // return object of type Dialog
+              return AlertDialog(
+                title: new Text("Login Error"),
+                content: new Text("Username or password cannot be empty!"),
+                actions: <Widget>[
+                  // usually buttons at the bottom of the dialog
+                  new FlatButton(
+                    child: new Text("Ok"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+    } else {
+      _login(_myUsername.text, _myPassword.text, context);
+      setState(() {
+        isLoading = true;
+      });
+    }
   }
 
   void _login(usernameField, passwordField, context) async {
