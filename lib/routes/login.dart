@@ -2,13 +2,16 @@
 // Changelog:
 // 20-05: Added focus nodes to return btn's - Harrison
 // 20-05: Added login validation to seperate function to allow for done btn on keyboard to run the function or the login button - Harrison
+// 20-05: Changed keyboard type to email - Harrison
 
+// Add imports
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:intl/intl.dart';
 import 'package:management_console_mobile/routes/main.dart';
 import '../main.dart' as globals;
+import 'package:management_console_mobile/routes/password-reset.dart';
 
 //Start login page
 
@@ -41,8 +44,8 @@ class _LoginPageState extends State<LoginPage> {
     final username = TextFormField(
       controller: _myUsername,
       style: globals.style,
-      autofocus: true,
       focusNode: _usernameFocus,
+      keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         hintText: 'Username',
@@ -91,7 +94,9 @@ class _LoginPageState extends State<LoginPage> {
         'Forgot password?',
         style: TextStyle(color: Colors.black54),
       ),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordResetPage()));
+      },
     );
 
     return Scaffold(
@@ -159,10 +164,10 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login(usernameField, passwordField, context) async {
     globals.currentUsername = usernameField;
-    encryptFunc(passwordField);
+    globals.currentPassword = encryptFunc(passwordField);
 
     http.Response response = await http.post(
-      'https://lucas-testing.000webhostapp.com',
+      'https://thecityoftruromariners.futurelucas4502.co.uk',
       body: <String, String>{
         "formname": "login",
         "username": globals.currentUsername,
@@ -209,12 +214,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-void encryptFunc(password) {
+String encryptFunc(password) {
   final key = encrypt.Key.fromUtf8('eb45707674371ce8259b2153c7b6a453');
   final iv = encrypt.IV.fromUtf8('70cd8558247bed84');
   final encrypter =
       encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
-  globals.currentPassword = (encrypter.encrypt(password, iv: iv)).base64;
+  return (encrypter.encrypt(password, iv: iv)).base64;
 }
 
 //End Login page
