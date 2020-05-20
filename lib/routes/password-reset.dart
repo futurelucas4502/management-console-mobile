@@ -5,9 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:management_console_mobile/routes/login.dart';
 import 'package:http/http.dart' as http;
-import 'package:management_console_mobile/routes/login.dart' as login;
+import 'package:management_console_mobile/routes/login.dart';
 import '../main.dart' as globals;
 
 // Start passwordResetPage
@@ -144,6 +143,26 @@ class _PasswordResetState extends State<PasswordResetPage> {
     if (response.body == "Success") {
       // Show enterCodePage
       Navigator.push(context, MaterialPageRoute(builder: (context) => EnterCodePage()));
+    } else if (response.body == "NoAccount"){
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // Return Alert Dialog
+          return AlertDialog(
+            title: new Text('Password Reset Error'),
+            content: new Text('Please check your email.'),
+            actions: <Widget>[
+              // Show button at bottom of alert
+              new FlatButton(
+                child: new Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        }
+      );
     } else {
       return showDialog(
         context: context,
@@ -151,9 +170,9 @@ class _PasswordResetState extends State<PasswordResetPage> {
           // Return Alert Dialog
           return AlertDialog(
             title: new Text('Password Reset Error'),
-            content: new Text('Please check your email and thast you have a active internet connection'),
+            content: new Text('Please that you have a active internet connection'),
             actions: <Widget>[
-              // Show button at hottom of alarrt
+              // Show button at bottom of alert
               new FlatButton(
                 child: new Text('Ok'),
                 onPressed: () {
@@ -380,7 +399,7 @@ class _NewPasswordState extends State<NewPasswordWidget> {
 
     final goBackBtn = FlatButton(
       onPressed: () {
-        Navigator.popAndPushNamed(context,'/login');
+        Navigator.pop(context, MaterialPageRoute(builder: (context) => EnterCodePage()));
       }, 
       child: Text(
         'Go Back',
@@ -421,17 +440,29 @@ class _NewPasswordState extends State<NewPasswordWidget> {
       // Ensure that both password field and verify field contain passwords
       if (_passwordField.text == "" || _passwordField.text == null || _passwordVerify.text == "" || _passwordVerify.text == null) {return AlertDialog(
               title: Text('Error'),
-              content: Text('You must enter a password and verify'),
+              content: Text('You must enter a new password'),
               actions: <Widget>[
                 new FlatButton(onPressed: () {
                   Navigator.pop(context);
                 }, child: Text('Ok'))
               ],
             );
-      } else {
-        if (_passwordField.text == _passwordVerify.text) {
+      } else if (_passwordField.text != _passwordVerify.text) {
+        showDialog(context: context,
+          builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text('Error'),
+              content: Text('Your passwords do not match. Please re-enter the new password'),
+              actions: <Widget>[
+                new FlatButton(onPressed: () {
+                  Navigator.pop(context);
+                }, child: Text('Ok'))
+              ],
+            );
+            });
+      } else{
           // Encrypt password
-          final password = login.encryptFunc(_passwordField.text);
+          final resetPassword = encryptFunc(_passwordField.text);
 
           // Send encrpyted password, entered code and current datetime to api
           http.Response response = await http.post(
@@ -439,7 +470,7 @@ class _NewPasswordState extends State<NewPasswordWidget> {
             body: <String, String>{
               "formname": "resetPasswordConfirmed",
               "code": code,
-              "newpass": password,
+              "newpass": resetPassword,
               'datetime': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())
             }
           );
@@ -459,7 +490,7 @@ class _NewPasswordState extends State<NewPasswordWidget> {
                   new FlatButton(
                     child: Text('Ok'),
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, '/login');
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
                     },
                   )
                 ],
@@ -474,7 +505,7 @@ class _NewPasswordState extends State<NewPasswordWidget> {
               content: Text('The password change request could not be found. Please check your code and ensure that it was less than 10 minutes since the code was sent to your email'),
               actions: <Widget>[
                 new FlatButton(onPressed: () {
-                  Navigator.popAndPushNamed(context, '/login');
+                  Navigator.popUntil(context, ModalRoute.withName('/passwordresetpage'));
                 }, child: Text('Ok'))
               ],
             );
@@ -488,27 +519,13 @@ class _NewPasswordState extends State<NewPasswordWidget> {
               content: Text('An unkonwn error occured. Please attempt the password reset again. If this keeps happening, please contact us at truromariners@gmail.com'),
               actions: <Widget>[
                 new FlatButton(onPressed: () {
-                  Navigator.popAndPushNamed(context, '/login');
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
                 }, child: Text('Ok'))
               ],
             );
           });
           }
-        } else {
-          showDialog(context: context,
-          builder: (BuildContext context) {
-          return AlertDialog(
-              title: Text('Error'),
-              content: Text('Your passwords do not match. Please re-enter the new password'),
-              actions: <Widget>[
-                new FlatButton(onPressed: () {
-                  Navigator.pop(context);
-                }, child: Text('Ok'))
-              ],
-            );
-            });
         }
-      }
     }
 }
   
