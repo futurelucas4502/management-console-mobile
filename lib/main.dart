@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/main': (context) => MainPage(),
         '/payments': (context) => PaymentsPage(),
         '/passwordresetpage': (context) => PaymentsPage(),
+        '/members': (context) => MembersPage(),
       },
     );
   }
@@ -56,7 +57,12 @@ class MyAppBar extends AppBar {
 
 //Drawer code
 
-class MyDrawer extends StatelessWidget {
+class MyDrawer extends StatefulWidget {
+  @override
+  _MyDrawerState createState() => _MyDrawerState();
+}
+
+class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
