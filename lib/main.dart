@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:management_console_mobile/routes/login.dart';
 import 'package:management_console_mobile/routes/main.dart';
 import 'package:management_console_mobile/routes/payments.dart';
+import 'package:management_console_mobile/routes/members.dart';
 
 var currentUsername;
 var currentPassword;
+// Add API URL
+String apiUrl = 'https://thecityoftruromariners.futurelucas4502.co.uk';
 var privileges;
 TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 //End Imports
@@ -106,7 +109,7 @@ class MyDrawer extends StatelessWidget {
                       onTap: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => MainPage()),
+                          MaterialPageRoute(builder: (context) => MembersPage()),
                         );
                       },
                     ),

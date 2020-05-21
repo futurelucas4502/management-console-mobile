@@ -128,7 +128,7 @@ class _PasswordResetState extends State<PasswordResetPage> {
 
   void _generateCode(String email) async {
     http.Response response = await http.post(
-      'https://thecityoftruromariners.futurelucas4502.co.uk',
+      globals.apiUrl,
       body: <String, String> {
         'formname': 'resetPassword',
         'email': email,
@@ -466,7 +466,7 @@ class _NewPasswordState extends State<NewPasswordWidget> {
 
           // Send encrpyted password, entered code and current datetime to api
           http.Response response = await http.post(
-            'https://thecityoftruromariners.futurelucas4502.co.uk',
+            globals.apiUrl,
             body: <String, String>{
               "formname": "resetPasswordConfirmed",
               "code": code,

@@ -41,7 +41,7 @@ Future<String> mainReady() async {
   var result;
   try {
     http.Response response = await http.post(
-      'https://lucas-testing.000webhostapp.com',
+      globals.apiUrl,
       body: <String, String>{
         "formname": "mainReady",
         "username": globals.currentUsername,
