@@ -33,8 +33,18 @@ dependencies:
   encrypt: ^4.0.1
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.7.3
+  flutter_launcher_name: ^0.0.1
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo.png"
+
+flutter_launcher_name:
+  name: "Management Console"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

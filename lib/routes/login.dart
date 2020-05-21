@@ -177,10 +177,6 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    setState(() {
-      isLoading = false;
-    });
-
     if (response.body == "1") {
       globals.privileges = "1";
     } else if (response.body == "0") {
@@ -207,6 +203,9 @@ class _LoginPageState extends State<LoginPage> {
         },
       );
     }
+    setState(() {
+      isLoading = false;
+    });
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => MainPage()),
