@@ -95,7 +95,8 @@ class _LoginPageState extends State<LoginPage> {
         style: TextStyle(color: Colors.black54),
       ),
       onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordResetPage()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => PasswordResetPage()));
       },
     );
 
@@ -124,7 +125,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+  _fieldFocusChange(
+      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
     // Change the current focused field
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
@@ -135,25 +137,25 @@ class _LoginPageState extends State<LoginPage> {
         _myPassword.text == "" ||
         _myUsername.text == null ||
         _myPassword.text == null) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              // return object of type Dialog
-              return AlertDialog(
-                title: new Text("Login Error"),
-                content: new Text("Username or password cannot be empty!"),
-                actions: <Widget>[
-                  // usually buttons at the bottom of the dialog
-                  new FlatButton(
-                    child: new Text("Ok"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text("Login Error"),
+            content: new Text("Username or password cannot be empty!"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Ok"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           );
+        },
+      );
     } else {
       _login(_myUsername.text, _myPassword.text, context);
       setState(() {
@@ -182,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
     } else if (response.body == "0") {
       globals.privileges = "0";
     } else {
-      return showDialog(
+      showDialog(
         context: context,
         builder: (BuildContext context) {
           // return object of type Dialog
@@ -202,6 +204,9 @@ class _LoginPageState extends State<LoginPage> {
           );
         },
       );
+      return setState(() {
+        isLoading = false;
+      });
     }
     setState(() {
       isLoading = false;
